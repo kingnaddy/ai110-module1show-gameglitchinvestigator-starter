@@ -33,7 +33,7 @@ A number guessing game built with Streamlit where the player tries to guess a se
 1. **Backwards hint messages** — "Too High" told the player to go higher, and "Too Low" told them to go lower, making the game unwinnable by following the hints.
 2. **Off-by-one attempt counter** — Attempts were initialized to `1` instead of `0`, so Normal difficulty showed 7 attempts remaining instead of 8 on the first load.
 3. **History, attempts, scores not cleared on new game** — Starting a new game did not reset the score, attempt count and guess history, causing old guesses to bleed into the new session.
-4. **Difficulty change did not update the secret number** — Switching difficulty (e.g., Normal → Hard) kept the old secret number, so the secret could be outside the new range. The "New Game" button also always generated a number from 1–100 regardless of difficulty.
+4. **Difficulty change did not update the secret number** — Switching difficulty (e.g. Normal → Hard) kept the old secret number, so the secret could be outside the new range. The "New Game" button also always generated a number from 1–100 regardless of difficulty.
 
 **Fixes Applied:**
 
