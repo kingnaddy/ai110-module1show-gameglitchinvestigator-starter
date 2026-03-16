@@ -1,5 +1,6 @@
 def get_range_for_difficulty(difficulty: str):
     """Return (low, high) inclusive range for a given difficulty."""
+
     if difficulty == "Easy":
         return 1, 20
     if difficulty == "Normal":
@@ -66,9 +67,8 @@ def update_score(current_score: int, outcome: str, attempt_number: int):
         return current_score + points
 
     if outcome == "Too High":
-        # BUG: Rewards +5 points on even attempts for a wrong guess - no logical reason to reward an incorrect guess. Fixed by removing the reward and just applying the penalty for a wrong guess regardless of attempt number.
-        # if attempt_number % 2 == 0:
-        #     return current_score + 5
+        if attempt_number % 2 == 0:
+            return current_score + 5
         return current_score - 5
 
     if outcome == "Too Low":

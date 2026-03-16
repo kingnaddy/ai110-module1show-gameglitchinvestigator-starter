@@ -27,8 +27,15 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
-if "secret" not in st.session_state:
+if "secret" not in st.session_state or st.session_state.get("last_difficulty") != difficulty:
+    # BUG: Changing difficulty only reset the secret, leaving attempts/score/history/status
+    # from the previous difficulty. Fixed by resetting all game state on difficulty change.
     st.session_state.secret = random.randint(low, high)
+    st.session_state.last_difficulty = difficulty
+    st.session_state.attempts = 0
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
 
 if "attempts" not in st.session_state:
     # BUG: Attempts start at 1, making attempts left 7 instead of 8 for Normal difficulty
@@ -47,7 +54,7 @@ if "history" not in st.session_state:
 st.subheader("Make a guess")
 
 st.info(
-    f"Guess a number between 1 and 100. "
+    f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
@@ -73,8 +80,11 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    # BUG: New game always used range 1–100 regardless of difficulty. Fixed to use low/high from selected difficulty.
+    st.session_state.secret = random.randint(low, high)
     st.session_state.status = "playing"
+    # BUG: Score was not reset on new game, causing score to carry over between games. Fixed by resetting score to 0 when starting a new game.
+    st.session_state.score = 0
     #BUG: History was not cleared on new game, causing old guesses to persist. Fixed by resetting history to an empty list when starting a new game.
     st.session_state.history = []
     st.success("New game started.")

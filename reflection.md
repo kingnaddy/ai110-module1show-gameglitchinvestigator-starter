@@ -41,11 +41,21 @@ Yes, it helped me design the tests and understand what to look for in each bug t
 
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 
+Every time you interact with a Streamlit app (like click a button) the entire Python script reruns from top to bottom. It's like refreshing the page, except it re-executes your code. Session state is like a dictionary that stores the values of your variables so that they can persist each time streamlit reruns. Without it, all your variables reset to their default values (go back to 0).
+
 ---
 
 ## 5. Looking ahead: your developer habits
 
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
   - This could be a testing habit, a prompting strategy, or a way you used Git.
+
+I like the strategy of having different chats for each bug it helps you stay organized and not have specific chats become be too convoluted.
+
 - What is one thing you would do differently next time you work with AI on a coding task?
+
+I would make sure I would attach context directly to every message so it can understand my problems better.
+
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+
+I think this project helped me realize that while AI might think it knows what is best for your specific problem or project, you have to verify what it gives you, because certain things that get flagged by the AI might have actually been written intentionally by you.

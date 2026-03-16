@@ -1,5 +1,5 @@
 import random
-from logic_utils import check_guess
+from logic_utils import check_guess, get_range_for_difficulty
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win
@@ -29,10 +29,11 @@ def test_too_low_message_says_go_higher():
     assert "HIGHER" in message, f"Expected 'HIGHER' in message but got: {message!r}"
 
 
-def simulate_new_game(state):
+def simulate_new_game(state, difficulty="Normal"):
     """Mirrors the new_game block in app.py."""
+    low, high = get_range_for_difficulty(difficulty)
     state["attempts"] = 0
-    state["secret"] = random.randint(1, 100)
+    state["secret"] = random.randint(low, high)
     state["status"] = "playing"
     state["history"] = []
 
@@ -56,3 +57,30 @@ def test_new_game_resets_attempts_and_history():
     simulate_new_game(state)
     assert state["attempts"] == 0
     assert state["history"] == []
+
+
+def simulate_difficulty_change(state, new_difficulty):
+    """Mirrors the difficulty-change logic in app.py."""
+    low, high = get_range_for_difficulty(new_difficulty)
+    if state.get("last_difficulty") != new_difficulty:
+        state["secret"] = random.randint(low, high)
+        state["last_difficulty"] = new_difficulty
+    return low, high
+
+
+def test_secret_updates_when_difficulty_changes():
+    # Regression: changing difficulty kept the old secret, which could be outside the new range.
+    # Set up a state as if the player was on Normal (range 1–100).
+    state = {"secret": 99, "last_difficulty": "Normal"}
+    low, high = simulate_difficulty_change(state, "Hard")
+    assert state["last_difficulty"] == "Hard"
+    assert low <= state["secret"] <= high, (
+        f"Secret {state['secret']} is outside Hard range {low}–{high}"
+    )
+
+
+def test_secret_unchanged_when_difficulty_stays_same():
+    # Sanity check: if difficulty hasn't changed, the secret should not be regenerated mid-game.
+    state = {"secret": 42, "last_difficulty": "Normal"}
+    simulate_difficulty_change(state, "Normal")
+    assert state["secret"] == 42
